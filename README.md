@@ -40,7 +40,7 @@ For example:
 
 ![Netflix OSS Example](https://github.com/Oreste-Luci/httpserver-gamescores/blob/master/netflix-oss-example.png?raw=true)
 
-![Class Diagram](https://github.com/Oreste-Luci/httpserver-gamescores/images/class-diagram.png)
+![Class Diagram](https://raw.githubusercontent.com/Oreste-Luci/httpserver-gamescores/master/images/class-diagram.png)
 
 Improvements
 
