@@ -79,19 +79,41 @@ Example:
 
 ## Technical Solution
 
-The architecture of the application was made as simple as possible. It mainly consists of 4 layers.
+### Overview
+
+The architecture of the application was made as simple as possible. It consists mainly of 4 layers.
+
+![Class Diagram](https://raw.githubusercontent.com/Oreste-Luci/httpserver-gamescores/master/images/architecture-layers.png)
 
 - The Dispatcher is in charge of receiving the request and forwarding it to the appropriate controller method.
 - The Controller gathers the information that it requires for processing the request.
 - The Service applies the business logic to the received request.
 - The DAO is in charge the CRUD operation on the data.
 
-![Class Diagram](https://raw.githubusercontent.com/Oreste-Luci/httpserver-gamescores/master/images/architecture-layers.png)
+### Data Structures & Concurrency
 
+Concurrency is handled by the Service Layer and in the DAO simple data structures were used to store the data.
+Maps are used to store key/value pairs, this structure was chosen due to the high performance in getting values given a key.
 
+In the cases where data needs to be found by value, additional maps were added with these values as keys.
+In this cases when updating a value two maps need to be updated.
+
+For storing sorted data `TreeSet` structure was used. It has [O(logn)](https://github.com/benblack86/java-snippets/blob/master/resources/java_collections.pdf) performance.
+
+The following diagram shows the class relationship:
 
 ![Class Diagram](https://raw.githubusercontent.com/Oreste-Luci/httpserver-gamescores/master/images/class-diagram.png)
 
-Improvements
+## Improvements
 
-- removed expired tokens with scheduler to reduce memory consumption
+The following improvements can be made to the solution:
+
+- Removed expired session tokens with scheduler to reduce memory consumption.
+In the implemented solution tokens are created every time a login request is received and they are only deleted when score post is made with an expired session key.
+- Better denormalization, separation into more maps, in the DAO for better read performance.
+- A deeper analysis of the locks needs to be made to determine if they can be applied per endpoint.
+- A distributed storage solution could be used to increase performace in response time and storage capacity, for example Cassandra.
+
+## Source Code
+
+The source code can be found in [https://github.com/Oreste-Luci/httpserver-gamescores](https://github.com/Oreste-Luci/httpserver-gamescores).
