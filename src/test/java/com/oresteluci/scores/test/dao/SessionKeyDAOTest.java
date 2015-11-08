@@ -63,7 +63,7 @@ public class SessionKeyDAOTest {
 
         sessionKeyDAO.saveScore(userScore);
 
-        List<UserScore> scores = sessionKeyDAO.getLevelHighScores(levelId);
+        List<UserScore> scores = sessionKeyDAO.getLevelHighScores(levelId, 15);
 
         if (scores == null || scores.size() != 1) {
 
@@ -140,7 +140,7 @@ public class SessionKeyDAOTest {
             sessionKeyDAO.saveScore(userScore);
         }
 
-        List<UserScore> scores = sessionKeyDAO.getLevelHighScores(levelid);
+        List<UserScore> scores = sessionKeyDAO.getLevelHighScores(levelid, 15);
 
         if (scores == null || scores.size() != 15) {
 

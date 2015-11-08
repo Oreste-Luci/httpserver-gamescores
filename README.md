@@ -23,6 +23,8 @@ To run the application with its default configuration you can use the following 
 
 > Note: this works if the `jar` file is in the `target` directory.
 
+To stop the server just `Ctrl+c`.
+
 ### Configuration parameters
 
 To customize the behaviour of the application the following parameters can be passed as arguments:
@@ -55,14 +57,15 @@ Example:
 
 |        |Value|Description|
 |--------|-----|-----------|
-|**Path**|`/<levelid>/score?sessionkey=<sessionkey>`|Method can be called several times poer user and level. Requests with invalid session keys are ignored.|
+|**Path**|`/<levelid>/score?sessionkey=<sessionkey>`|Method can be called several times per user and level. Requests with invalid session keys are ignored.|
 |**Method**|`POST`|   |
 |**Request Body**|`<score>`|Integer number that represents the users score for the level.|
 |**Response**|    |Empty response.|
 
 Example:
 
-    curl -X "POST" "http://localhost:8080/10/score?sessionkey=1B4EB7BE47F046E98E1DC458B80B2D2C" -d "2500"
+    curl -X "POST" "http://localhost:8080/10/score?sessionkey=1B4EB7BE47F046E98E1DC458B80B2D2C" \
+    -d "2500"
 
 ### Get high score list
 
@@ -96,11 +99,11 @@ Concurrency is handled by the Service Layer and in the DAO simple data structure
 Maps are used to store key/value pairs, this structure was chosen due to the high performance in getting values given a key.
 
 In the cases where data needs to be found by value, additional maps were added with these values as keys.
-In this cases when updating a value two maps need to be updated.
+In this cases when updating a value, two maps need to be updated.
 
 For storing sorted data `TreeSet` structure was used. It has [O(logn)](https://github.com/benblack86/java-snippets/blob/master/resources/java_collections.pdf) performance.
 
-The following diagram shows the class relationship:
+The following diagram shows the relationship of the classes:
 
 ![Class Diagram](https://raw.githubusercontent.com/Oreste-Luci/httpserver-gamescores/master/images/class-diagram.png)
 
@@ -109,8 +112,8 @@ The following diagram shows the class relationship:
 The following improvements can be made to the solution:
 
 - Removed expired session tokens with scheduler to reduce memory consumption.
-In the implemented solution tokens are created every time a login request is received and they are only deleted when score post is made with an expired session key.
-- Better denormalization, separation into more maps, in the DAO for better read performance.
+In the implemented solution tokens are created every time a login request is received and they are only deleted when a score post is made with an expired session key.
+- Better denormalization, separation into more maps in the DAO for better read performance.
 - A deeper analysis of the locks needs to be made to determine if they can be applied per endpoint.
 - A distributed storage solution could be used to increase performace in response time and storage capacity, for example Cassandra.
 
