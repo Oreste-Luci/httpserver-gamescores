@@ -44,17 +44,20 @@ For example:
 <table>
     <tr>
         <th>Path</th>
-        <td></td>
-        <td></td>
+        <td><pre>/<userid>/login</pre></td>
+        <td>
+            Requests the creation of a new sessionkey. The sessionkey is valid for the amount of minutes configured in the server.
+            A new sessionkey is created every time this endpoint is called.
+        </td>
     </tr>
     <tr>
         <th>Method</th>
-        <td></td>
+        <td>GET</td>
         <td></td>
     </tr>
     <tr>
         <th>Response</th>
-        <td></td>
+        <td><sessionkey></td>
         <td></td>
     </tr>
     <tr>
