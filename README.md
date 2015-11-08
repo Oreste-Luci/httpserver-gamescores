@@ -41,31 +41,53 @@ For example:
 
 ### Login
 
-<table>
-    <tr>
-        <th>Path</th>
-        <td><pre>/<userid>/login</pre></td>
-        <td>
-            Requests the creation of a new sessionkey. The sessionkey is valid for the amount of minutes configured in the server.
-            A new sessionkey is created every time this endpoint is called.
-        </td>
-    </tr>
-    <tr>
-        <th>Method</th>
-        <td>GET</td>
-        <td></td>
-    </tr>
-    <tr>
-        <th>Response</th>
-        <td><sessionkey></td>
-        <td></td>
-    </tr>
-    <tr>
-        <th></th>
-        <td></td>
-        <td></td>
-    </tr>
-</table>
+|  |Value|Description|
+|--|-----|-----------|
+|**Path**|`/<userid>/login`|Requests the creation of a new session key. The session key is valid for the amount of minutes configured in the server. A new session key is created every time the endpoint is called.|
+|**Method**|`GET`||
+|**Response**|`<sessionkey>`|Unique string that represent the session.|
+
+Example:
+
+    curl http://localhost:8080/100/login -> 1B4EB7BE47F046E98E1DC458B80B2D2C
+
+### Score
+
+|  |Value|Description|
+|--|-----|-----------|
+|**Path**|`/<levelid>/score?sessionkey=<sessionkey>`|Method can be called several times poer user and level. Requests with invalid session keys are ignored.|
+|**Method**|`POST`||
+|**Request Body**|`<score>`|Integer number that represents the users score for the level.|
+|**Response**| |Empty response.|
+
+Example:
+
+    curl -X "POST" "http://localhost:8080/10/score?sessionkey=1B4EB7BE47F046E98E1DC458B80B2D2C" -d "2500"
+
+### Get high score list
+
+|  |Value|Description|
+|--|-----|-----------|
+|**Path**|`/<levelid>/highscorelist`|Retrieves the high score list for a level. The list size is determined by the Application configuration.|
+|**Method**|`GET`||
+|**Response**|CSV of `<userid>=<score>`|Comma separated list with user id and scores.|
+
+Example:
+
+    curl http://localhost:8080/10/highscorelist -> 100=2500
+
+
+## Technical Solution
+
+The architecture of the application was made as simple as possible. It mainly consists of 4 layers.
+
+- The Dispatcher is in charge of receiving the request and forwarding it to the appropriate controller method.
+- The Controller gathers the information that it requires for processing the request.
+- The Service applies the business logic to the received request.
+- The DAO is in charge the CRUD operation on the data.
+
+![Class Diagram](https://raw.githubusercontent.com/Oreste-Luci/httpserver-gamescores/master/images/architecture-layers.png)
+
 
 
 ![Class Diagram](https://raw.githubusercontent.com/Oreste-Luci/httpserver-gamescores/master/images/class-diagram.png)
