@@ -3,6 +3,8 @@ package com.oresteluci.scores.domain;
 import java.math.BigInteger;
 
 /**
+ * POJO that keeps the relationship between the user, level and score.
+ *
  * @author Oreste Luci
  */
 public class UserScore {

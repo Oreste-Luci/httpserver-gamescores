@@ -1,6 +1,8 @@
 package com.oresteluci.scores.domain;
 
 /**
+ * POJO that keeps the relationship between user, session key and its expiry date
+ *
  * @author Oreste Luci
  */
 public class UserSessionKey {

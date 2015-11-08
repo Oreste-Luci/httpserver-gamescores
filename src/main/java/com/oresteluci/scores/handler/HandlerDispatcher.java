@@ -10,6 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 
 /**
+ * Determines which controller method to call by analyzing the HttpExchange object.
+ *
  * @author Oreste Luci
  */
 public class HandlerDispatcher implements HttpHandler {
@@ -17,6 +19,9 @@ public class HandlerDispatcher implements HttpHandler {
     public static final String REQUEST_METHOD_GET = "GET";
     public static final String REQUEST_METHOD_POST = "POST";
 
+    /**
+     * Valid Paths REGEXs
+     */
     public static final String LOGIN_REGEX_PATH = "/([0-9]+)/login$";
     public static final String SCORE_REGEX_PATH = "/([0-9]+)/score$";
     public static final String HIGH_SCORE_LIST_REGEX_PATH = "/([0-9]+)/highscorelist";
@@ -29,6 +34,8 @@ public class HandlerDispatcher implements HttpHandler {
     }
 
     /**
+     * Analyzes the path and request method to determine which controller function to call.
+     * If none matches then it puts a 404 in the response.
      *
      * @param httpExchange
      * @throws IOException
@@ -70,8 +77,12 @@ public class HandlerDispatcher implements HttpHandler {
 
     }
 
+    /**
+     * Utility method to build the 404 response
+     * @param httpExchange
+     * @throws IOException
+     */
     private void notFound(HttpExchange httpExchange) throws IOException {
-
         httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
         OutputStream os = httpExchange.getResponseBody();
         os.close();

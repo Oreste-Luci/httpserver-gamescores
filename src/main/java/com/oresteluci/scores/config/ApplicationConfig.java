@@ -1,6 +1,8 @@
 package com.oresteluci.scores.config;
 
 /**
+ * Contains default configuration parameters for the application.
+ *
  * @author Oreste Luci
  */
 public class ApplicationConfig {

@@ -3,6 +3,8 @@ package com.oresteluci.scores.domain;
 import java.util.Comparator;
 
 /**
+ * Comparator for storing the sorted score list
+ *
  * @author Oreste Luci
  */
 public class UserScoreComparator implements Comparator<UserScore> {

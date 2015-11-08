@@ -15,6 +15,8 @@ import static com.oresteluci.scores.config.ApplicationConfig.HTTP_EXECUTOR_DEFAU
 import static com.oresteluci.scores.config.ApplicationConfig.SERVER_DEFAULT_PORT;
 
 /**
+ * Starting point of the application
+ *
  * @author Oreste Luci
  */
 public class Application {
