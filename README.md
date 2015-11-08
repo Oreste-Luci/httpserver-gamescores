@@ -83,7 +83,7 @@ Example:
 
 The architecture of the application was made as simple as possible. It consists mainly of 4 layers.
 
-![Class Diagram](https://raw.githubusercontent.com/Oreste-Luci/httpserver-gamescores/master/images/architecture-layers.png)
+![Class Diagram](https://raw.githubusercontent.com/Oreste-Luci/httpserver-gamescores/master/images/architecture-layers2.png)
 
 - The Dispatcher is in charge of receiving the request and forwarding it to the appropriate controller method.
 - The Controller gathers the information that it requires for processing the request.
