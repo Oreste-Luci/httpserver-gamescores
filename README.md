@@ -41,10 +41,10 @@ For example:
 
 ### Login
 
-|  |Value|Description|
-|--|-----|-----------|
+|        |Value|Description|
+|--------|-----|-----------|
 |**Path**|`/<userid>/login`|Requests the creation of a new session key. The session key is valid for the amount of minutes configured in the server. A new session key is created every time the endpoint is called.|
-|**Method**|`GET`||
+|**Method**|`GET`|  |
 |**Response**|`<sessionkey>`|Unique string that represent the session.|
 
 Example:
@@ -53,12 +53,12 @@ Example:
 
 ### Score
 
-|  |Value|Description|
-|--|-----|-----------|
+|        |Value|Description|
+|--------|-----|-----------|
 |**Path**|`/<levelid>/score?sessionkey=<sessionkey>`|Method can be called several times poer user and level. Requests with invalid session keys are ignored.|
-|**Method**|`POST`||
+|**Method**|`POST`|   |
 |**Request Body**|`<score>`|Integer number that represents the users score for the level.|
-|**Response**| |Empty response.|
+|**Response**|    |Empty response.|
 
 Example:
 
@@ -66,10 +66,10 @@ Example:
 
 ### Get high score list
 
-|  |Value|Description|
-|--|-----|-----------|
+|        |Value|Description|
+|--------|-----|-----------|
 |**Path**|`/<levelid>/highscorelist`|Retrieves the high score list for a level. The list size is determined by the Application configuration.|
-|**Method**|`GET`||
+|**Method**|`GET`|   |
 |**Response**|CSV of `<userid>=<score>`|Comma separated list with user id and scores.|
 
 Example:
