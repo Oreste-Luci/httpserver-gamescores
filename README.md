@@ -40,6 +40,8 @@ For example:
 
 ![Netflix OSS Example](https://github.com/Oreste-Luci/httpserver-gamescores/blob/master/netflix-oss-example.png?raw=true)
 
+![Class Diagram](https://github.com/Oreste-Luci/httpserver-gamescores/images/class-diagram.png)
+
 Improvements
 
 - removed expired tokens with scheduler to reduce memory consumption
