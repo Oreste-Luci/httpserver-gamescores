@@ -3,6 +3,8 @@ package com.oresteluci.scores.service;
 import com.oresteluci.scores.config.ApplicationConfig;
 import com.oresteluci.scores.dao.ScoreDAO;
 import com.oresteluci.scores.domain.UserScore;
+import com.oresteluci.scores.injection.AutoBean;
+import com.oresteluci.scores.injection.AutoInject;
 
 import java.math.BigInteger;
 import java.util.Calendar;
@@ -18,17 +20,15 @@ import java.util.logging.Logger;
  *
  * @author Oreste Luci
  */
+@AutoBean
 public class ScoreService {
 
     private final Lock lock = new ReentrantLock();
 
     private static final Logger log = Logger.getLogger(ScoreService.class.getName());
 
+    @AutoInject
     private ScoreDAO sessionKeyDAO;
-
-    public ScoreService() {
-        this.sessionKeyDAO = new ScoreDAO();
-    }
 
     /**
      * Creates a session key for the given user.

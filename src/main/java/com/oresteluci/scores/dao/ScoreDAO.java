@@ -3,6 +3,7 @@ package com.oresteluci.scores.dao;
 import com.oresteluci.scores.domain.UserScore;
 import com.oresteluci.scores.domain.UserScoreComparator;
 import com.oresteluci.scores.domain.UserSessionKey;
+import com.oresteluci.scores.injection.AutoBean;
 
 import java.util.*;
 
@@ -13,6 +14,7 @@ import java.util.*;
  *
  * @author Oreste Luci
  */
+@AutoBean
 public class ScoreDAO {
 
     /**

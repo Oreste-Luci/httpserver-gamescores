@@ -14,7 +14,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertTrue;
@@ -30,7 +29,7 @@ public class ApplicationTests {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         Application application = new Application();
-        application.runServer(ApplicationTests.SERVER_PORT, Executors.newCachedThreadPool());
+        //application.runServer(ApplicationTests.SERVER_PORT, Executors.newCachedThreadPool());
     }
 
     @Test
