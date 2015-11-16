@@ -84,7 +84,7 @@ Example:
 
 ### Overview
 
-The architecture of the application was made as simple as possible. It consists mainly of 4 layers.
+The architecture of the application was made as simple as possible (following the KISS principle). It consists mainly of 4 layers.
 
 ![Class Diagram](https://raw.githubusercontent.com/Oreste-Luci/httpserver-gamescores/master/images/architecture-layers2.png)
 

@@ -9,29 +9,29 @@ import java.math.BigInteger;
  */
 public class UserScore {
 
-    private Integer levelId;
-    private Integer userId;
+    private int levelId;
+    private int userId;
     private BigInteger score;
 
-    public UserScore(Integer levelId, Integer userId, BigInteger score) {
+    public UserScore(int levelId, int userId, BigInteger score) {
         this.levelId = levelId;
         this.userId = userId;
         this.score = score;
     }
 
-    public Integer getLevelId() {
+    public int getLevelId() {
         return levelId;
     }
 
-    public void setLevelId(Integer levelId) {
+    public void setLevelId(int levelId) {
         this.levelId = levelId;
     }
 
-    public Integer getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
@@ -42,5 +42,4 @@ public class UserScore {
     public void setScore(BigInteger score) {
         this.score = score;
     }
-
 }

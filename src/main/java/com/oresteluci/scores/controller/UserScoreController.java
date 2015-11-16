@@ -2,7 +2,7 @@ package com.oresteluci.scores.controller;
 
 import com.oresteluci.scores.injection.AutoBean;
 import com.oresteluci.scores.injection.AutoInject;
-import com.oresteluci.scores.service.ScoreService2;
+import com.oresteluci.scores.service.ScoreService;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ import static java.net.HttpURLConnection.HTTP_OK;
 public @AutoBean class UserScoreController extends AbstractController {
 
     @AutoInject
-    private ScoreService2 scoreService;
+    private ScoreService scoreService;
 
     /**
      * Reads score parameters and adds score to user for the given level.

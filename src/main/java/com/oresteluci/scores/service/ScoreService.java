@@ -1,139 +1,118 @@
 package com.oresteluci.scores.service;
 
 import com.oresteluci.scores.config.ApplicationConfig;
-import com.oresteluci.scores.dao.ScoreDAO;
 import com.oresteluci.scores.domain.UserScore;
+import com.oresteluci.scores.domain.UserScoreComparator;
+import com.oresteluci.scores.domain.UserSession;
 import com.oresteluci.scores.injection.AutoBean;
 import com.oresteluci.scores.injection.AutoInject;
 
 import java.math.BigInteger;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Logger;
+import java.util.Map;
+import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Service that contains the main business logic.
- * This class also controls the thread locks.
- *
  * @author Oreste Luci
  */
 @AutoBean
 public class ScoreService {
 
-    private final Lock lock = new ReentrantLock();
-
-    private static final Logger log = Logger.getLogger(ScoreService.class.getName());
-
     @AutoInject
-    private ScoreDAO sessionKeyDAO;
+    private LoginService loginService;
 
+    // Two maps are used to denormalize the store UserScore. One for searching by levelId the other by levelId and UserId.
     /**
-     * Creates a session key for the given user.
-     *
-     * @param userId
-     * @return
+     * Map that stores the list of user scores for each level. Using and ordered Set to keep scores.
      */
-    public String login(Integer userId) {
+    private Map<Integer,TreeSet<UserScore>> levelScoreMap = new ConcurrentHashMap<>();
+    /**
+     * Map that stores UserScore by level and user.
+     */
+    private Map<String,UserScore> userScoreMap = new ConcurrentHashMap<>();
 
-        // Creates random session key
-        String sessionKey = generateRandomSessionKey();
 
-        // Determining expiry date
-        Calendar expiryDate = Calendar.getInstance();
-        expiryDate.add(Calendar.MINUTE, ApplicationConfig.SESSION_KEY_TIMEOUT_MINUTES);
+    synchronized public void addScore(int levelId, String sessionKey, int score) {
 
-        lock.lock();
-        try {
+        // Getting User Session
+        UserSession userSession = loginService.getUserSessionByKey(sessionKey);
 
-            // saving session key
-            sessionKeyDAO.saveSessionKey(userId, sessionKey, expiryDate.getTime());
-
-        } finally {
-            lock.unlock();
+        // Ignoring if no valid user session
+        if (userSession ==  null) {
+            return;
         }
 
-        return sessionKey;
-    }
+        // Getting user scores for level
+        TreeSet<UserScore> levelUserScores = levelScoreMap.get(levelId);
 
-    /**
-     * Adds a score to the user for the given level. If the session key has expired it does not add it.
-     *
-     * @param levelId
-     * @param sessionKey
-     * @param score
-     */
-    public void addScore(Integer levelId, String sessionKey, Integer score) {
+        // If level has no scores yet
+        if (levelUserScores == null) {
 
-        // Getting sessionKey expiry date
-        Long sessionKeyExpiryDate =  sessionKeyDAO.getSessionKeyExpiry(sessionKey);
+            UserScore userScore = new UserScore(levelId, userSession.getUserId(), BigInteger.valueOf(score));
 
-        if (sessionKeyExpiryDate != null) {
+            levelUserScores = new TreeSet<>(new UserScoreComparator());
+            levelUserScores.add(userScore);
 
-            Calendar cal = Calendar.getInstance();
+            // Adding Score to both maps
+            levelScoreMap.put(levelId,levelUserScores);
 
-            // Determining if sessionKey has expired
-            if (cal.getTime().getTime() <= sessionKeyExpiryDate) {
+            String userScoreMapKey = getUserScoreMapKey(levelId, userSession.getUserId());
+            userScoreMap.put(userScoreMapKey,userScore);
 
-                lock.lock();
-                try {
+        } else { // If level has scores
 
-                    Integer userId = sessionKeyDAO.getUserIdFromSessionKey(sessionKey);
+            // Getting Score by level and user
+            String userScoreMapKey = getUserScoreMapKey(levelId, userSession.getUserId());
+            UserScore userScore = userScoreMap.get(userScoreMapKey);
 
-                    if (userId != null) {
+            if (userScore != null) {
 
-                        UserScore userScore = sessionKeyDAO.getUserLevelScore(userId, levelId);
-
-                        // If no previous score present it sets given score as current score
-                        if (userScore == null) {
-
-                            userScore = new UserScore(levelId, userId, BigInteger.valueOf(score));
-
-                        } else {
-
-                            // Adding given core to previous score
-                            userScore.setScore(userScore.getScore().add(BigInteger.valueOf(score.intValue())));
-                        }
-
-                        sessionKeyDAO.saveScore(userScore);
-                    }
-
-                } finally {
-                    lock.unlock();
-                }
+                // Updating score
+                userScore.setScore(userScore.getScore().add(BigInteger.valueOf(score)));
 
             } else {
-                // If sessionKey is expired then remove it from storage.
-                sessionKeyDAO.removeSessionKey(sessionKey);
-            }
 
-        } else {
-            log.fine("SessionKey does not exist: " + sessionKey);
+                // Creating new score and storing it
+                userScore = new UserScore(levelId, userSession.getUserId(), BigInteger.valueOf(score));
+                levelUserScores.add(userScore);
+                userScoreMap.put(userScoreMapKey,userScore);
+            }
         }
     }
 
-    /**
-     * Returns a list of users with the highest scores for the given level.
-     * The list size is limited by @see com.oresteluci.scores.config.ApplicationConfig.SCORE_LIST_SIZE
-     *
-     * @param levelId
-     * @return
-     */
-    public List<UserScore> getHighestScores(Integer levelId) {
+    public List<UserScore> getHighestScores(int levelId) {
 
-        return sessionKeyDAO.getLevelHighScores(levelId, ApplicationConfig.SCORE_LIST_SIZE);
+        // Get ordered list of scores for the given level
+        TreeSet<UserScore> userScoresSet = levelScoreMap.get(levelId);
+
+        List<UserScore> highScoresList = new ArrayList<>(ApplicationConfig.SCORE_LIST_SIZE);
+
+        if (userScoresSet == null || userScoresSet.size() == 0) {
+            return highScoresList;
+        }
+
+        int toIndex = ApplicationConfig.SCORE_LIST_SIZE;
+
+        if (userScoresSet.size() < toIndex) {
+            toIndex = userScoresSet.size();
+        }
+
+        int count = 0;
+        for (UserScore userScore : userScoresSet.descendingSet()) {
+
+            if (++count > toIndex) {
+                break;
+            }
+
+            highScoresList.add(userScore);
+        }
+
+        return highScoresList;
     }
 
-    /**
-     * Utility method to create a random session key.
-     * It is based on the universally unique identifier logic provided by java.
-     * It strips the - character from the generated UUID.
-     *
-     * @return
-     */
-    private String generateRandomSessionKey() {
-        return UUID.randomUUID().toString().replaceAll("-","").toUpperCase();
+    private String getUserScoreMapKey(int levelId, int userId) {
+        return levelId + "-" + userId;
     }
 }

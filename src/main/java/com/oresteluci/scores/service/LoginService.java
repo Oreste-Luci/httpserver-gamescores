@@ -5,16 +5,19 @@ import com.oresteluci.scores.domain.UserSession;
 import com.oresteluci.scores.injection.AutoBean;
 
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Oreste Luci
  */
-public @AutoBean class LoginService {
+@AutoBean
+public class LoginService {
 
-    private Map<String,UserSession> userSessions = new HashMap<>();
+    // ConcurrentHashMap is used to handle concurrent access. Updates do not interfere with reads.
+    // The LoginService does not update values in hte map. It adds, reads and removes, but no updates.
+    private Map<String,UserSession> userSessions = new ConcurrentHashMap<>();
 
     public String login(int userId) {
 
@@ -27,6 +30,7 @@ public @AutoBean class LoginService {
 
         UserSession userSession = new UserSession(userId, sessionKey, expiryDate.getTime());
 
+        // Since ConcurrentHashMap is being used no need to synchronize this insert operation
         userSessions.put(sessionKey, userSession);
 
         return sessionKey;
@@ -34,6 +38,7 @@ public @AutoBean class LoginService {
 
     public UserSession getUserSessionByKey(String sessionKey) {
 
+        // No need to synchronize the read operation
         UserSession userSession = userSessions.get(sessionKey);
 
         if (userSession == null) {
@@ -47,6 +52,7 @@ public @AutoBean class LoginService {
             return userSession;
         } else {
             // Removing expired session key
+            // No concurrency issues since if an already removed key is removed nothing will happen.
             userSessions.remove(sessionKey);
             return null;
         }

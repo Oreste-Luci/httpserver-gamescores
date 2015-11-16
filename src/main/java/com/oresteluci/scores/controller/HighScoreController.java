@@ -3,7 +3,7 @@ package com.oresteluci.scores.controller;
 import com.oresteluci.scores.domain.UserScore;
 import com.oresteluci.scores.injection.AutoBean;
 import com.oresteluci.scores.injection.AutoInject;
-import com.oresteluci.scores.service.ScoreService2;
+import com.oresteluci.scores.service.ScoreService;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ import static java.net.HttpURLConnection.HTTP_OK;
 public class HighScoreController extends AbstractController {
 
     @AutoInject
-    private ScoreService2 scoreService;
+    private ScoreService scoreService;
 
     /**
      * Reads the level id from the path and returns the 15 users with the highest scores.
