@@ -18,5 +18,4 @@ public class Application {
     public static void main(String[] args) throws Exception {
         ServerInitialization.run("com.oresteluci.scores", "com.oresteluci.scores.server.ServerImpl", args);
     }
-    
 }
