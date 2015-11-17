@@ -60,4 +60,5 @@ public class UserScore implements Comparable {
             return this.getScore().compareTo(object2.getScore());
         }
     }
+
 }

@@ -60,6 +60,7 @@ public class ScoreService {
 
         try {
 
+            //TODO does not work when scores are the same
             // Getting user scores for level
             TreeSet<UserScore> levelUserScores = levelScoreMap.get(levelId);
 
@@ -153,4 +154,5 @@ public class ScoreService {
     private String getUserScoreMapKey(int levelId, int userId) {
         return levelId + "-" + userId;
     }
+
 }
