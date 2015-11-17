@@ -16,6 +16,7 @@ import static com.oresteluci.scores.config.ApplicationConfig.HTTP_EXECUTOR_DEFAU
 import static com.oresteluci.scores.config.ApplicationConfig.SERVER_DEFAULT_PORT;
 
 /**
+ * Server Implementation
  * @author Oreste Luci
  */
 @AutoBean

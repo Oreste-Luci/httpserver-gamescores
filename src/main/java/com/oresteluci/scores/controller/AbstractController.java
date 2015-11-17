@@ -1,5 +1,6 @@
 package com.oresteluci.scores.controller;
 
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
@@ -7,10 +8,9 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-
 /**
  * Base controller class with common utility methods
+ *
  * @author Oreste Luci
  */
 public abstract class AbstractController {
@@ -33,7 +33,10 @@ public abstract class AbstractController {
             responseLength = responseBody.length();
         }
 
-        httpExchange.sendResponseHeaders(HTTP_OK, responseLength);
+        Headers headers = httpExchange.getResponseHeaders();
+        headers.set("Content-Type", "text/html");
+
+        httpExchange.sendResponseHeaders(statusCode, responseLength);
         OutputStream os = httpExchange.getResponseBody();
 
         if (responseLength > 0) {

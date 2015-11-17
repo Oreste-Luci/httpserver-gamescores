@@ -1,6 +1,6 @@
 package com.oresteluci.scores;
 
-import com.oresteluci.scores.injection.ServerApplication;
+import com.oresteluci.scores.injection.ServerInitialization;
 
 /**
  * Starting point of the application
@@ -10,11 +10,12 @@ import com.oresteluci.scores.injection.ServerApplication;
 public class Application {
 
     /**
-     * Everything starts here. Starts the server.
-     * @param args
+     * Everything starts here
+     *
+     * @param args program parameters
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        ServerApplication.run("com.oresteluci.scores","com.oresteluci.scores.server.ServerImpl",args);
+        ServerInitialization.run("com.oresteluci.scores", "com.oresteluci.scores.server.ServerImpl", args);
     }
 }

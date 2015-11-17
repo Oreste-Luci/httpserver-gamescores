@@ -7,7 +7,7 @@ import java.math.BigInteger;
  *
  * @author Oreste Luci
  */
-public class UserScore {
+public class UserScore implements Comparable {
 
     private int levelId;
     private int userId;
@@ -41,5 +41,23 @@ public class UserScore {
 
     public void setScore(BigInteger score) {
         this.score = score;
+    }
+
+    @Override
+    public int compareTo(Object obj) {
+
+        if (!(obj instanceof UserScore)) {
+            throw new RuntimeException("Object is not of type UserScore");
+        }
+
+        UserScore object2 = (UserScore)obj;
+
+        if (this.getScore() == null && object2.getScore() != null) {
+            return -1;
+        } else if (this.getScore() != null && object2.getScore() == null) {
+            return 1;
+        } else {
+            return this.getScore().compareTo(object2.getScore());
+        }
     }
 }

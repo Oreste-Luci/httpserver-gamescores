@@ -2,7 +2,7 @@ package com.oresteluci.scores.handler;
 
 import com.oresteluci.scores.controller.HighScoreController;
 import com.oresteluci.scores.controller.LoginController;
-import com.oresteluci.scores.controller.UserScoreController;
+import com.oresteluci.scores.controller.ScoreController;
 import com.oresteluci.scores.injection.AutoBean;
 import com.oresteluci.scores.injection.AutoInject;
 import com.sun.net.httpserver.HttpExchange;
@@ -34,7 +34,7 @@ public @AutoBean class HandlerDispatcher implements HttpHandler {
     private LoginController loginController;
 
     @AutoInject
-    private UserScoreController userScoreController;
+    private ScoreController scoreController;
 
     @AutoInject
     private HighScoreController highScoreController;
@@ -67,7 +67,7 @@ public @AutoBean class HandlerDispatcher implements HttpHandler {
             } else if (requestPath.matches(HandlerDispatcher.SCORE_REGEX_PATH)
                     && HandlerDispatcher.REQUEST_METHOD_POST.equalsIgnoreCase(requestMethod)) {
 
-                userScoreController.execute(httpExchange);
+                scoreController.execute(httpExchange);
 
             } else if (requestPath.matches(HandlerDispatcher.HIGH_SCORE_LIST_REGEX_PATH)
                     && HandlerDispatcher.REQUEST_METHOD_GET.equalsIgnoreCase(requestMethod)) {
@@ -78,9 +78,7 @@ public @AutoBean class HandlerDispatcher implements HttpHandler {
 
                 notFound(httpExchange);
             }
-
         }
-
     }
 
     /**

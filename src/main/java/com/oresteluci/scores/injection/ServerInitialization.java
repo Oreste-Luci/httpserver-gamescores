@@ -14,7 +14,7 @@ import java.util.*;
  *
  * @author Oreste Luci
  */
-public class ServerApplication {
+public class ServerInitialization {
 
     public static Map<String,Object> autoBeanMap = new HashMap<>();
 
@@ -28,7 +28,7 @@ public class ServerApplication {
     public static void run(String scanPackage, String serverClass, String[] args) throws Exception {
 
         // Creating Injection Dependencies
-        ServerApplication.inject(scanPackage);
+        ServerInitialization.inject(scanPackage);
 
         // Getting server and running it
         Server server = (Server)autoBeanMap.get(serverClass);
@@ -36,6 +36,15 @@ public class ServerApplication {
     }
 
 
+    /**
+     * Main method for injecting dependencies.
+     *
+     * @param scanPackage
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     */
     private static void inject(String scanPackage) throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
 
         Class[] classes = getClasses(scanPackage);
@@ -72,6 +81,12 @@ public class ServerApplication {
         }
     }
 
+    /**
+     * Method to inject beans into the objects annotated fields
+     * @param obj
+     * @return
+     * @throws IllegalAccessException
+     */
     private static List<String> autoInjectBeans(Object obj) throws IllegalAccessException {
 
         List<String> result = new ArrayList<>();

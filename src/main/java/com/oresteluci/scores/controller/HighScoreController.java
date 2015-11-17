@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.oresteluci.scores.handler.HandlerDispatcher.HIGH_SCORE_LIST_REGEX_PATH;
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 /**
@@ -46,24 +47,30 @@ public class HighScoreController extends AbstractController {
         // Getting high scores
         List<UserScore> scores = scoreService.getHighestScores(levelId);
 
-        // Building response
-        StringBuilder response = new StringBuilder("");
+        if (scores == null || scores.size() == 0) {
 
-        int count = 0;
-        for (UserScore userScore : scores) {
+            createResponse(httpExchange, HTTP_NO_CONTENT, "");
 
-            count++;
+        } else {
+            // Building response
+            StringBuilder response = new StringBuilder("");
 
-            response.append(userScore.getUserId());
-            response.append("=");
-            response.append(userScore.getScore());
+            int count = 0;
+            for (UserScore userScore : scores) {
 
-            if (count < scores.size()) {
-                response.append(",");
+                count++;
+
+                response.append(userScore.getUserId());
+                response.append("=");
+                response.append(userScore.getScore());
+
+                if (count < scores.size()) {
+                    response.append(",");
+                }
             }
-        }
 
-        // Writing response
-        createResponse(httpExchange, HTTP_OK, response.toString());
+            // Writing response
+            createResponse(httpExchange, HTTP_OK, response.toString());
+        }
     }
 }

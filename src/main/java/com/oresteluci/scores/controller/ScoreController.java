@@ -11,12 +11,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.oresteluci.scores.handler.HandlerDispatcher.SCORE_REGEX_PATH;
+import static java.net.HttpURLConnection.HTTP_GONE;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 /**
  * @author Oreste Luci
  */
-public @AutoBean class UserScoreController extends AbstractController {
+public @AutoBean class ScoreController extends AbstractController {
 
     @AutoInject
     private ScoreService scoreService;
@@ -52,8 +53,12 @@ public @AutoBean class UserScoreController extends AbstractController {
         String body = convertStreamToString(httpExchange.getRequestBody());
 
         // Adding score to user for the current level
-        scoreService.addScore(levelId, sessionKey, Integer.parseInt(body));
+        boolean added = scoreService.addScore(levelId, sessionKey, Integer.parseInt(body));
 
-        createResponse(httpExchange, HTTP_OK, "");
+        if (added) {
+            createResponse(httpExchange, HTTP_OK, "");
+        } else {
+            createResponse(httpExchange, HTTP_GONE, "");
+        }
     }
 }

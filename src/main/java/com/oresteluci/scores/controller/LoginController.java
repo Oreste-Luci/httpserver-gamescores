@@ -17,9 +17,6 @@ import static java.net.HttpURLConnection.HTTP_OK;
  */
 public @AutoBean class LoginController extends AbstractController {
 
-    //@AutoInject
-    //private ScoreService sessionKeyService;
-
     @AutoInject
     private LoginService loginService;
 
