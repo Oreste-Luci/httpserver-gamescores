@@ -10,24 +10,24 @@ import com.oresteluci.scores.injection.AutoBean;
 @AutoBean
 public class ApplicationConfig {
 
-    private static final int SERVER_DEFAULT_PORT = 8080;
-    private static final int SCORE_LIST_SIZE = 15;
-    private static final int SESSION_KEY_TIMEOUT_MINUTES = 10;
-    private static final int HTTP_EXECUTOR_DEFAULT_FIXED_THREAD_POOL_SIZE = 10;
+    private int SERVER_DEFAULT_PORT = 8080;
+    private int SCORE_LIST_SIZE = 15;
+    private int SESSION_KEY_TIMEOUT_MINUTES = 10;
+    private int HTTP_EXECUTOR_DEFAULT_FIXED_THREAD_POOL_SIZE = 10;
 
-    public static int getServerDefaultPort() {
+    public int getServerDefaultPort() {
         return SERVER_DEFAULT_PORT;
     }
 
-    public static int getScoreListSize() {
+    public int getScoreListSize() {
         return SCORE_LIST_SIZE;
     }
 
-    public static int getSessionKeyTimeoutMinutes() {
+    public int getSessionKeyTimeoutMinutes() {
         return SESSION_KEY_TIMEOUT_MINUTES;
     }
 
-    public static int getHttpExecutorDefaultFixedThreadPoolSize() {
+    public int getHttpExecutorDefaultFixedThreadPoolSize() {
         return HTTP_EXECUTOR_DEFAULT_FIXED_THREAD_POOL_SIZE;
     }
 }
