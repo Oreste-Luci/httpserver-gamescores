@@ -1,5 +1,6 @@
 package com.oresteluci.scores.server;
 
+import com.oresteluci.scores.config.ApplicationConfig;
 import com.oresteluci.scores.handler.HandlerDispatcher;
 import com.oresteluci.scores.injection.AutoBean;
 import com.oresteluci.scores.injection.AutoInject;
@@ -12,15 +13,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
-import static com.oresteluci.scores.config.ApplicationConfig.HTTP_EXECUTOR_DEFAULT_FIXED_THREAD_POOL_SIZE;
-import static com.oresteluci.scores.config.ApplicationConfig.SERVER_DEFAULT_PORT;
-
 /**
  * Server Implementation
  * @author Oreste Luci
  */
-@AutoBean
-public class ServerImpl implements Server {
+public @AutoBean class ServerImpl implements Server {
 
     private static final Logger log = Logger.getLogger(ServerImpl.class.getName());
 
@@ -32,6 +29,9 @@ public class ServerImpl implements Server {
 
     @AutoInject
     private HandlerDispatcher handlerDispatcher;
+
+    @AutoInject
+    private ApplicationConfig applicationConfig;
 
     /**
      * Contains startup parameters
@@ -66,7 +66,7 @@ public class ServerImpl implements Server {
      */
     private int getPort() throws Exception {
 
-        int port = SERVER_DEFAULT_PORT;
+        int port = applicationConfig.getServerDefaultPort();
 
         String p = runParameters.get(ServerImpl.RUN_PARAMS_PORT_KEY);
 
@@ -102,7 +102,7 @@ public class ServerImpl implements Server {
 
         } else {
 
-            int poolSize = HTTP_EXECUTOR_DEFAULT_FIXED_THREAD_POOL_SIZE;
+            int poolSize = applicationConfig.getHttpExecutorDefaultFixedThreadPoolSize();
 
             if (runParameters.get(ServerImpl.RUN_PARAMS_EXECUTOR_FIXED_SIZE_KEY) != null) {
                 poolSize = Integer.parseInt(runParameters.get(ServerImpl.RUN_PARAMS_EXECUTOR_FIXED_SIZE_KEY));

@@ -7,7 +7,10 @@ import com.oresteluci.scores.injection.AutoBean;
 import com.oresteluci.scores.injection.AutoInject;
 
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -15,11 +18,13 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * @author Oreste Luci
  */
-@AutoBean
-public class ScoreService {
+public @AutoBean class ScoreService {
 
     @AutoInject
     private LoginService loginService;
+
+    @AutoInject
+    private ApplicationConfig applicationConfig;
 
     // Two maps are used to de-normalize the store UserScore. One for searching by levelId the other by levelId and UserId.
     /**
@@ -118,7 +123,7 @@ public class ScoreService {
             // Sorting the list
             Collections.sort(userScoreList);
 
-            int toIndex = ApplicationConfig.SCORE_LIST_SIZE;
+            int toIndex = applicationConfig.getScoreListSize();
 
             if (userScoreList.size() < toIndex) {
                 toIndex = userScoreList.size();

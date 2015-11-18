@@ -3,6 +3,7 @@ package com.oresteluci.scores.service;
 import com.oresteluci.scores.config.ApplicationConfig;
 import com.oresteluci.scores.domain.UserSession;
 import com.oresteluci.scores.injection.AutoBean;
+import com.oresteluci.scores.injection.AutoInject;
 
 import java.util.Calendar;
 import java.util.Map;
@@ -15,6 +16,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @AutoBean
 public class LoginService {
 
+    @AutoInject
+    private ApplicationConfig applicationConfig;
+
     // ConcurrentHashMap is used to handle concurrent access. Updates do not interfere with reads.
     // The LoginService does not update values in hte map. It adds, reads and removes, but no updates.
     private Map<String,UserSession> userSessions = new ConcurrentHashMap<>();
@@ -26,7 +30,7 @@ public class LoginService {
 
         // Determining expiry date
         Calendar expiryDate = Calendar.getInstance();
-        expiryDate.add(Calendar.MINUTE, ApplicationConfig.SESSION_KEY_TIMEOUT_MINUTES);
+        expiryDate.add(Calendar.MINUTE, applicationConfig.getSessionKeyTimeoutMinutes());
 
         UserSession userSession = new UserSession(userId, sessionKey, expiryDate.getTime());
 
