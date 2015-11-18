@@ -140,5 +140,4 @@ public class ScoreService {
     private String getUserScoreMapKey(int levelId, int userId) {
         return levelId + "-" + userId;
     }
-
 }

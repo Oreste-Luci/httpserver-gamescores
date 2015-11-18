@@ -68,5 +68,4 @@ public class LoginService {
     private String generateRandomSessionKey() {
         return UUID.randomUUID().toString().replaceAll("-","").toUpperCase();
     }
-
 }

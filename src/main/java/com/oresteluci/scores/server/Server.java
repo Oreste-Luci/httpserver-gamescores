@@ -7,5 +7,4 @@ package com.oresteluci.scores.server;
 public interface Server {
 
     void run(String[] args) throws Exception;
-
 }
