@@ -61,5 +61,4 @@ public @AutoBean class ScoreController extends AbstractController {
             createResponse(httpExchange, HTTP_GONE, "");
         }
     }
-
 }

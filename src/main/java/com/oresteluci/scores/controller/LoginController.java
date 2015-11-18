@@ -45,5 +45,4 @@ public @AutoBean class LoginController extends AbstractController {
         // Returning session key
         createResponse(httpExchange, HTTP_OK, sessionKey);
     }
-
 }

@@ -75,5 +75,4 @@ public abstract class AbstractController {
         java.util.Scanner s = new java.util.Scanner(is);
         return s.hasNext() ? s.next() : "";
     }
-
 }

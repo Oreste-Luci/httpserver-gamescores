@@ -73,5 +73,4 @@ public class HighScoreController extends AbstractController {
             createResponse(httpExchange, HTTP_OK, response.toString());
         }
     }
-
 }

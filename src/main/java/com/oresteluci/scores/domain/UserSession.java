@@ -28,5 +28,4 @@ public class UserSession {
     public Date getExpiry() {
         return expiry;
     }
-
 }
