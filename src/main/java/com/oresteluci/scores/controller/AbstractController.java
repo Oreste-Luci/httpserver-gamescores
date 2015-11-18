@@ -34,7 +34,10 @@ public abstract class AbstractController {
         }
 
         Headers headers = httpExchange.getResponseHeaders();
-        headers.set("Content-Type", "text/html");
+
+        if (headers != null) {
+            headers.set("Content-Type", "text/html");
+        }
 
         httpExchange.sendResponseHeaders(statusCode, responseLength);
         OutputStream os = httpExchange.getResponseBody();

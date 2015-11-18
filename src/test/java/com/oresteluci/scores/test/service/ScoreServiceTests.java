@@ -1,5 +1,6 @@
 package com.oresteluci.scores.test.service;
 
+import com.oresteluci.scores.config.ApplicationConfig;
 import com.oresteluci.scores.domain.UserScore;
 import com.oresteluci.scores.domain.UserSession;
 import com.oresteluci.scores.service.LoginService;
@@ -69,6 +70,8 @@ public class ScoreServiceTests {
     public void getHighestScoresTest() {
 
         ScoreService scoreService = new ScoreService();
+        ApplicationConfig applicationConfig = new ApplicationConfig();
+        ReflectionTestUtils.setField(scoreService,"applicationConfig",applicationConfig);
 
         String sessionKey = "ABC";
         int levelId = 100;

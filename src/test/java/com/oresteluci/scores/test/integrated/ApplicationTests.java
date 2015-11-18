@@ -1,6 +1,6 @@
 package com.oresteluci.scores.test.integrated;
 
-import com.oresteluci.scores.Application;
+import com.oresteluci.scores.injection.ServerInitialization;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -28,8 +28,10 @@ public class ApplicationTests {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        Application application = new Application();
-        //application.runServer(ApplicationTests.SERVER_PORT, Executors.newCachedThreadPool());
+
+        String[] args = { "-port=" + SERVER_PORT, "-executor=fixed", "-poolSize=20"};
+
+        ServerInitialization.run("com.oresteluci.scores", "com.oresteluci.scores.server.ServerImpl", args);
     }
 
     @Test
