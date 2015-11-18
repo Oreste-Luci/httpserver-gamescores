@@ -1,7 +1,7 @@
 package com.oresteluci.scores.controller;
 
 import com.oresteluci.scores.domain.UserScore;
-import com.oresteluci.scores.injection.AutoBean;
+import com.oresteluci.scores.injection.AutoComponent;
 import com.oresteluci.scores.injection.AutoInject;
 import com.oresteluci.scores.service.ScoreService;
 import com.sun.net.httpserver.HttpExchange;
@@ -18,7 +18,7 @@ import static java.net.HttpURLConnection.HTTP_OK;
 /**
  * @author Oreste Luci
  */
-@AutoBean
+@AutoComponent
 public class HighScoreController extends AbstractController {
 
     @AutoInject

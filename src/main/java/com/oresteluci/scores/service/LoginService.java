@@ -2,7 +2,7 @@ package com.oresteluci.scores.service;
 
 import com.oresteluci.scores.config.ApplicationConfig;
 import com.oresteluci.scores.domain.UserSession;
-import com.oresteluci.scores.injection.AutoBean;
+import com.oresteluci.scores.injection.AutoComponent;
 import com.oresteluci.scores.injection.AutoInject;
 
 import java.util.Calendar;
@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Oreste Luci
  */
-@AutoBean
+@AutoComponent
 public class LoginService {
 
     @AutoInject

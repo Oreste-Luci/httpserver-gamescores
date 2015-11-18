@@ -57,7 +57,7 @@ public class ServerInitialization {
 
             for (Annotation annotation : annotations) {
 
-                if (annotation.annotationType().equals(com.oresteluci.scores.injection.AutoBean.class)) {
+                if (annotation.annotationType().equals(AutoComponent.class)) {
 
                     Object obj = clazz.newInstance();
 

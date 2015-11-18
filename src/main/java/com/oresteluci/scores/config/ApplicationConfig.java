@@ -1,13 +1,13 @@
 package com.oresteluci.scores.config;
 
-import com.oresteluci.scores.injection.AutoBean;
+import com.oresteluci.scores.injection.AutoComponent;
 
 /**
  * Contains default configuration parameters for the application.
  *
  * @author Oreste Luci
  */
-@AutoBean
+@AutoComponent
 public class ApplicationConfig {
 
     private int SERVER_DEFAULT_PORT = 8080;

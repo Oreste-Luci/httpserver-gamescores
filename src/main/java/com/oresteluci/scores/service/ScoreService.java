@@ -3,7 +3,7 @@ package com.oresteluci.scores.service;
 import com.oresteluci.scores.config.ApplicationConfig;
 import com.oresteluci.scores.domain.UserScore;
 import com.oresteluci.scores.domain.UserSession;
-import com.oresteluci.scores.injection.AutoBean;
+import com.oresteluci.scores.injection.AutoComponent;
 import com.oresteluci.scores.injection.AutoInject;
 
 import java.math.BigInteger;
@@ -18,7 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * @author Oreste Luci
  */
-public @AutoBean class ScoreService {
+public @AutoComponent class ScoreService {
 
     @AutoInject
     private LoginService loginService;

@@ -3,7 +3,7 @@ package com.oresteluci.scores.handler;
 import com.oresteluci.scores.controller.HighScoreController;
 import com.oresteluci.scores.controller.LoginController;
 import com.oresteluci.scores.controller.ScoreController;
-import com.oresteluci.scores.injection.AutoBean;
+import com.oresteluci.scores.injection.AutoComponent;
 import com.oresteluci.scores.injection.AutoInject;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -18,7 +18,7 @@ import java.net.URI;
  *
  * @author Oreste Luci
  */
-public @AutoBean class HandlerDispatcher implements HttpHandler {
+public @AutoComponent class HandlerDispatcher implements HttpHandler {
 
     public static final String REQUEST_METHOD_GET = "GET";
     public static final String REQUEST_METHOD_POST = "POST";

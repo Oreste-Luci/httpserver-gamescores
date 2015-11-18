@@ -2,7 +2,7 @@ package com.oresteluci.scores.server;
 
 import com.oresteluci.scores.config.ApplicationConfig;
 import com.oresteluci.scores.handler.HandlerDispatcher;
-import com.oresteluci.scores.injection.AutoBean;
+import com.oresteluci.scores.injection.AutoComponent;
 import com.oresteluci.scores.injection.AutoInject;
 import com.sun.net.httpserver.HttpServer;
 
@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * Server Implementation
  * @author Oreste Luci
  */
-public @AutoBean class ServerImpl implements Server {
+public @AutoComponent class ServerImpl implements Server {
 
     private static final Logger log = Logger.getLogger(ServerImpl.class.getName());
 

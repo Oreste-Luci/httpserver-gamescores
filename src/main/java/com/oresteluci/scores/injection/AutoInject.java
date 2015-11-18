@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation to inject bean into field.
- * @see AutoBean
+ * @see AutoComponent
  * @author Oreste Luci
  */
 @Target(ElementType.FIELD)
