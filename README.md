@@ -88,20 +88,26 @@ The architecture of the application was made as simple as possible (following th
 
 ![Class Diagram](https://raw.githubusercontent.com/Oreste-Luci/httpserver-gamescores/master/images/architecture-layers2.png)
 
-- The Dispatcher is in charge of receiving the request and forwarding it to the appropriate controller method.
-- The Controller gathers the information that it requires for processing the request.
+- The Dispatcher is in charge of receiving the request and forwarding it to the appropriate controller.
+- The Controller gathers the information that it requires for processing from the request and forwards it to the service.
 - The Service applies the business logic to the received request.
-- The DAO is in charge the CRUD operation on the data.
+
+### Dependency Injection
+
+The package `com.oresteluci.scores.injection` handles all the logig for automatic dependency injection. 
+Two annotations are used for this purpose `@AutoComponent` and `@AutoInject`. 
+
+The `@AutoComponent` is a class level annotation that indicates that this class should be instantiated for later injection.
+
+The `@AutoInject` is a field level annotation that indicates that an `@AutoComponent` should be injected in this field.
 
 ### Data Structures & Concurrency
 
-Concurrency is handled by the Service Layer and in the DAO simple data structures were used to store the data.
+Data storage and concurrency is handled by the Service Layer. Simple denormalized data structures were used to storage and fast retrieval.
 Maps are used to store key/value pairs, this structure was chosen due to the high performance in getting values given a key.
 
 In the cases where data needs to be found by value, additional maps were added with these values as keys.
-In this cases when updating a value, two maps need to be updated.
-
-For storing sorted data `TreeSet` structure was used. It has [O(logn)](https://github.com/benblack86/java-snippets/blob/master/resources/java_collections.pdf) performance.
+In this cases when updating a value, two maps need to be updated and concurrency is handled by locks.
 
 The following diagram shows the relationship of the classes:
 
@@ -113,9 +119,9 @@ The following improvements can be made to the solution:
 
 - Removed expired session tokens with scheduler to reduce memory consumption.
 In the implemented solution tokens are created every time a login request is received and they are only deleted when a score post is made with an expired session key.
-- Better denormalization, separation into more maps in the DAO for better read performance.
-- A deeper analysis of the locks needs to be made to determine if they can be applied per endpoint.
+- More denormalization for better read performance.
 - A distributed storage solution could be used to increase performace in response time and storage capacity, for example Cassandra.
+- More Unit tests for better coverage.
 
 ## Source Code
 
