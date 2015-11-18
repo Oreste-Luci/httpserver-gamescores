@@ -7,10 +7,7 @@ import com.oresteluci.scores.injection.AutoBean;
 import com.oresteluci.scores.injection.AutoInject;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -28,7 +25,7 @@ public class ScoreService {
     /**
      * Map that stores the list of user scores for each level. Using and ordered Set to keep scores.
      */
-    private Map<Integer,TreeSet<UserScore>> levelScoreMap = new ConcurrentHashMap<>();
+    private Map<Integer,List<UserScore>> levelScoreMap = new ConcurrentHashMap<>();
     /**
      * Map that stores UserScore by level and user.
      */
@@ -62,26 +59,25 @@ public class ScoreService {
 
             //TODO does not work when scores are the same
             // Getting user scores for level
-            TreeSet<UserScore> levelUserScores = levelScoreMap.get(levelId);
+            List<UserScore> levelUserScores = levelScoreMap.get(levelId);
+
+            String userScoreMapKey = getUserScoreMapKey(levelId, userSession.getUserId());
 
             // If level has no scores yet
             if (levelUserScores == null) {
 
                 UserScore userScore = new UserScore(levelId, userSession.getUserId(), BigInteger.valueOf(score));
 
-                levelUserScores = new TreeSet<>();
+                levelUserScores = new ArrayList<>();
                 levelUserScores.add(userScore);
 
                 // Adding Score to both maps
                 levelScoreMap.put(levelId, levelUserScores);
-
-                String userScoreMapKey = getUserScoreMapKey(levelId, userSession.getUserId());
                 userScoreMap.put(userScoreMapKey, userScore);
 
             } else { // If level has scores
 
                 // Getting Score by level and user
-                String userScoreMapKey = getUserScoreMapKey(levelId, userSession.getUserId());
                 UserScore userScore = userScoreMap.get(userScoreMapKey);
 
                 if (userScore != null) {
@@ -113,32 +109,22 @@ public class ScoreService {
         try {
 
             // Get ordered list of scores for the given level
-            TreeSet<UserScore> userScoresSet = levelScoreMap.get(levelId);
+            List<UserScore> userScoreList = levelScoreMap.get(levelId);
 
-            List<UserScore> highScoresList = new ArrayList<>(ApplicationConfig.SCORE_LIST_SIZE);
-
-            if (userScoresSet == null || userScoresSet.size() == 0) {
-                return highScoresList;
+            if (userScoreList == null || userScoreList.size() == 0) {
+                return userScoreList;
             }
+
+            // Sorting the list
+            Collections.sort(userScoreList);
 
             int toIndex = ApplicationConfig.SCORE_LIST_SIZE;
 
-            if (userScoresSet.size() < toIndex) {
-                toIndex = userScoresSet.size();
+            if (userScoreList.size() < toIndex) {
+                toIndex = userScoreList.size();
             }
 
-            // Put into result list top scores
-            int count = 0;
-            for (UserScore userScore : userScoresSet.descendingSet()) {
-
-                if (++count > toIndex) {
-                    break;
-                }
-
-                highScoresList.add(userScore);
-            }
-
-            return highScoresList;
+            return userScoreList.subList(0,toIndex);
 
         } finally {
             lock.unlock();

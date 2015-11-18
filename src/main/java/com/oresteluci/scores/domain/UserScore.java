@@ -43,6 +43,11 @@ public class UserScore implements Comparable {
         this.score = score;
     }
 
+    /**
+     * Comparing scores.
+     * @param obj
+     * @return 1, 0 or -1 as this score is numerically less than, equal to, or greater than obj.score.
+     */
     @Override
     public int compareTo(Object obj) {
 
@@ -53,11 +58,11 @@ public class UserScore implements Comparable {
         UserScore object2 = (UserScore)obj;
 
         if (this.getScore() == null && object2.getScore() != null) {
-            return -1;
-        } else if (this.getScore() != null && object2.getScore() == null) {
             return 1;
+        } else if (this.getScore() != null && object2.getScore() == null) {
+            return -1;
         } else {
-            return this.getScore().compareTo(object2.getScore());
+            return this.getScore().compareTo(object2.getScore()) * (-1);
         }
     }
 
