@@ -1,13 +1,20 @@
 package com.oresteluci.scores.injection;
 
 import com.oresteluci.scores.server.Server;
+import sun.net.www.protocol.file.FileURLConnection;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.net.JarURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * Class that creates bean dependencies and starts server.
@@ -47,7 +54,8 @@ public class ServerInitialization {
      */
     private static void inject(String scanPackage) throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
 
-        Class[] classes = getClasses(scanPackage);
+        ArrayList<Class<?>> classes = ServerInitialization.getClassesForPackage(scanPackage);
+
         List<String> pending = new ArrayList<>();
 
         // Instantiating AutoBeans
@@ -118,65 +126,122 @@ public class ServerInitialization {
     }
 
     /**
-     * Scans all classes accessible from the context class loader which belong to the given package and subpackages.
+     * Gets all the classes in the specified package as determined by the context class loader
      *
-     * @param packageName The base package
-     * @return The classes
-     * @throws ClassNotFoundException
-     * @throws IOException
+     * @param pckgName the package name to search
+     * @return a list of classes that exist within that package
+     * @throws ClassNotFoundException if something goes wrong
      */
-    private static Class[] getClasses(String packageName) throws ClassNotFoundException, IOException {
+    public static ArrayList<Class<?>> getClassesForPackage(String pckgName) throws ClassNotFoundException {
 
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        assert classLoader != null;
-        String path = packageName.replace('.', '/');
-        Enumeration resources = classLoader.getResources(path);
-        List<File> dirs = new ArrayList<>();
+        final ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
 
-        while (resources.hasMoreElements()) {
-            URL resource = (URL)resources.nextElement();
-            dirs.add(new File(resource.getFile()));
-        }
+        try {
+            final ClassLoader cld = Thread.currentThread().getContextClassLoader();
 
-        ArrayList<Class> classes = new ArrayList<Class>();
-        for (File directory : dirs) {
-            classes.addAll(findClasses(directory, packageName));
-        }
+            if (cld == null)
+                throw new ClassNotFoundException("Can't get class loader.");
 
-        return classes.toArray(new Class[classes.size()]);
-    }
+            final Enumeration<URL> resources = cld.getResources(pckgName.replace('.', '/'));
 
-    /**
-     * Recursive method used to find all classes in a given directory and subdirs.
-     *
-     * @param directory   The base directory
-     * @param packageName The package name for classes found inside the base directory
-     * @return The classes
-     * @throws ClassNotFoundException
-     */
-    private static List findClasses(File directory, String packageName) throws ClassNotFoundException {
+            URLConnection connection;
 
-        List classes = new ArrayList();
+            for (URL url = null; resources.hasMoreElements() && ((url = resources.nextElement()) != null);) {
 
-        if (!directory.exists()) {
-            return classes;
-        }
+                try {
 
-        File[] files = directory.listFiles();
+                    connection = url.openConnection();
 
-        for (File file : files) {
+                    if (connection instanceof JarURLConnection) {
 
-            if (file.isDirectory()) {
+                        checkJarFile((JarURLConnection) connection, pckgName,classes);
 
-                assert !file.getName().contains(".");
-                classes.addAll(findClasses(file, packageName + "." + file.getName()));
+                    } else if (connection instanceof FileURLConnection) {
 
-            } else if (file.getName().endsWith(".class")) {
+                        try {
 
-                classes.add(Class.forName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
+                            checkDirectory(new File(URLDecoder.decode(url.getPath(),"UTF-8")), pckgName, classes);
+
+                        } catch (final UnsupportedEncodingException ex) {
+
+                            throw new ClassNotFoundException(pckgName + " does not appear to be a valid package (Unsupported encoding)", ex);
+                        }
+
+                    } else {
+                        throw new ClassNotFoundException(pckgName + " (" + url.getPath() + ") does not appear to be a valid package");
+                    }
+
+                } catch (final IOException ioex) {
+                    throw new ClassNotFoundException("IOException was thrown when trying to get all resources for " + pckgName, ioex);
+                }
             }
+        } catch (final NullPointerException ex) {
+            throw new ClassNotFoundException(pckgName + " does not appear to be a valid package (Null pointer exception)", ex);
+        } catch (final IOException ioex) {
+            throw new ClassNotFoundException("IOException was thrown when trying to get all resources for " + pckgName, ioex);
         }
 
         return classes;
+    }
+
+    /**
+     * @param directory The directory to start with
+     * @param pckgName The package name to search for. Will be needed for getting the Class object.
+     * @param classes if a file isn't loaded but still is in the directory
+     * @throws ClassNotFoundException
+     */
+    private static void checkDirectory(File directory, String pckgName, ArrayList<Class<?>> classes) throws ClassNotFoundException {
+
+        File tmpDirectory;
+
+        if (directory.exists() && directory.isDirectory()) {
+
+            final String[] files = directory.list();
+
+            for (final String file : files) {
+
+                if (file.endsWith(".class")) {
+
+                    try {
+                        classes.add(Class.forName(pckgName + '.' + file.substring(0, file.length() - 6)));
+                    } catch (final NoClassDefFoundError e) {
+                        // do nothing. this class hasn't been found by the
+                        // loader, and we don't care.
+                    }
+                } else if ((tmpDirectory = new File(directory, file)).isDirectory()) {
+                    checkDirectory(tmpDirectory, pckgName + "." + file, classes);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param connection the connection to the jar
+     * @param pckgname the package name to search for
+     * @param classes the current ArrayList of all classes. This method will simply add new classes.
+     * @throws ClassNotFoundException if a file isn't loaded but still is in the jar file
+     * @throws IOException if it can't correctly read from the jar file.
+     */
+    private static void checkJarFile(JarURLConnection connection, String pckgname, ArrayList<Class<?>> classes) throws ClassNotFoundException, IOException {
+
+        final JarFile jarFile = connection.getJarFile();
+
+        final Enumeration<JarEntry> entries = jarFile.entries();
+
+        String name;
+
+        for (JarEntry jarEntry = null; entries.hasMoreElements() && ((jarEntry = entries.nextElement()) != null);) {
+
+            name = jarEntry.getName();
+
+            if (name.contains(".class")) {
+
+                name = name.substring(0, name.length() - 6).replace('/', '.');
+
+                if (name.contains(pckgname)) {
+                    classes.add(Class.forName(name));
+                }
+            }
+        }
     }
 }
